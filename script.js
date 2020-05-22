@@ -30,6 +30,10 @@ function operate(operator,n1,n2) {
   res = multiply(n1,n2);
     return res;
   } else if (operator=="/") {
+    if (n2 == 0){
+      res = 'You cannot divide by zero.';
+      return res;
+    }
   res = divide(n1,n2);
     return res;
   }
@@ -49,7 +53,11 @@ document.getElementById("8").addEventListener("click", function(){numPress('8');
 document.getElementById("9").addEventListener("click", function(){numPress('9');});
 document.getElementById("0").addEventListener("click", function(){numPress('0');});
 document.getElementById("00").addEventListener("click", function(){numPress('00');});
-document.getElementById("dot").addEventListener("click", function(){numPress('.');});
+document.getElementById("dot").addEventListener("click", function(){
+  if (decimalControl == 0){
+    numPress('.');
+  }
+});
 
 document.getElementById("plus").addEventListener("click", function(){
   operatorPress('+');
@@ -71,7 +79,9 @@ let operator = '';
 let firstNumber = 0;
 let secondNumber = '';
 let opControl = 0;
-let res = 0;
+let numControl = 0;
+let decimalControl = 0;
+let res = '';
 
 
 function setDis() {
@@ -79,25 +89,36 @@ function setDis() {
 }
 
 function numPress(element) {
-  if (opControl == 0){
+  if (element == '.'){
+    decimalControl = 1;
+  }
+  if (numControl == 0){
     display+=element;
     setDis(display);
   }
-  if (opControl == 1){
+  if (numControl == 1){
     display = '';
     display+=element;
     setDis(display);
-    opControl = 0;
+    numControl = 0;
   }
 }
+
 function operatorPress(sign) {
+  decimalControl = 0;
+  if (opControl == 1){
+    equalPress();
+  }
   operator = sign;
+  numControl = 1;
   opControl = 1;
   firstNumber = display;
 }
-function equalPress() {
 
-  operate(operator,firstNumber,display);
+function equalPress() {
+  decimalControl = 0;
+  secondNumber = display;
+  operate(operator,firstNumber,secondNumber);
   display = res;
   setDis(display);
 
@@ -110,7 +131,9 @@ document.getElementById("clear").addEventListener("click", function(){
   firstNumber = '';
   secondNumber = '';
   opControl = 0;
+  numControl = 0;
   res = 0;
+  decimalControl = 0;
   setDis();
 });
 
